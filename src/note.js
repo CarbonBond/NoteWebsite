@@ -1,21 +1,37 @@
 
 
 const noteManager = (()=> {
-    let noteList = {default: ''}
+    let noteList = {default: 'default'}
     const updateDirectoryDOM = () => {
         const noteDirectory = document.querySelector('.noteDirectory');
         for (let note in noteList) {
-            const noteDOM = document.createElement('div');
-            noteDOM.textContent = noteList[note];
-            console.log( noteList[note])
-            noteDirectory.appendChild(noteDOM);
+            if(!checkIfDrawn('directoryNote', note)){
+                const noteDOM = document.createElement('div');
+                noteDOM.classList.add("directoryNote", note)
+                noteDOM.textContent = noteList[note];
+                noteDirectory.appendChild(noteDOM);
+            }
         }
     }
     const addNote = () => {
-        console.log("Implement addNote")
+        let newNote = prompt('Add a note', '');
+        const noteClass = newNote.replaceAll(" ", '');
+        noteList[noteClass] = `${newNote}`;
+        updateDirectoryDOM();
+    }
+    function checkIfDrawn(baseClass, searchClass){
+        const itemList = document.querySelectorAll(`.${baseClass}`)
+        let isDrawn = false;
+        itemList.forEach((e) => {
+            if(searchClass == e.classList[1]){
+                isDrawn = true;
+            }
+        })
+        return isDrawn;
     }
     return {
-        updateDirectoryDOM
+        addNote,
+        updateDirectoryDOM,
     }
 })();
 
