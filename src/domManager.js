@@ -25,8 +25,35 @@ const domManager = (() => {
         }
     };
 
+    const updateDOM = (item, location, textContent, additionalClass) => {
+        const locationElement = document.querySelector(`.${location}`);
+        if (typeof(item)=='string') {
+            if(!checkIfDrawn(item)){
+                const newDiv = document.createElement('div');
+                newDiv.classList.add(item)
+                if(additionalClass){
+                    newDiv.classList.add(additionalClass);
+                }
+                if(textContent){
+                    newDiv.textContent = textContent;
+                }
+                locationElement.appendChild(newDiv);
+            }
+        }
+    }
+    
+    function checkIfDrawn(searchClass, searchLocation){
+        const item = document.querySelector(`.${searchClass}`)
+        let isDrawn = false;
+        if(item) {
+            isDrawn = true;
+        }
+        return isDrawn;
+    }
+    
     return{
         deleteElement,
+        updateDOM,
     }
 })();
 

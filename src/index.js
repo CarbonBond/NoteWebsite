@@ -4,7 +4,6 @@ import domManager from './domManager'
 
 main();
 
-noteManager.updateDirectoryDOM();
 
 //TEST CODE START
 
