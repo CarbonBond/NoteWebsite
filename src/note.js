@@ -1,4 +1,4 @@
-
+import "./note.css";
 
 const noteManager = (()=> {
     let noteList = {default: 'default'}

@@ -1,0 +1,6 @@
+.directoryNote{
+    font-size:20px;
+}
+.directoryNote:hover{
+    cursor: pointer;
+}
