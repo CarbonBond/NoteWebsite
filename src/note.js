@@ -15,9 +15,24 @@ const noteManager = (()=> {
     }
     const addNote = () => {
         let newNote = prompt('Add a note', '');
-        const noteClass = newNote.replaceAll(" ", '');
-        noteList[noteClass] = `${newNote}`;
-        updateDirectoryDOM();
+        if(newNote != ''){
+            let noteClass = newNote.replaceAll(" ", '');
+            for (let note in noteList){
+                if(note == noteClass){
+                    noteClass += '.1';
+                    for(let noteDup in noteList){
+                        if(noteClass == noteDup){
+                            let endNumber = noteClass.slice(noteClass.lastIndexOf('.')+1, noteClass.length)
+                            let noteClassAmount = Number(endNumber);
+                            noteClassAmount += 1;
+                            noteClass = noteClass.replace(endNumber, noteClassAmount);  
+                        }
+                    }
+                }
+            }
+            noteList[noteClass] = `${newNote}`;
+            updateDirectoryDOM();
+        }
     }
     function checkIfDrawn(baseClass, searchClass){
         const itemList = document.querySelectorAll(`.${baseClass}`)

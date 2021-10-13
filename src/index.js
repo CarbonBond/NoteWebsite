@@ -3,6 +3,8 @@ import noteManager from './note.js'
 
 main();
 
+noteManager.updateDirectoryDOM();
+
 const testBody = document.querySelector(".noteBody");
 const testButton = document.createElement('button');
 testBody.appendChild(testButton);
