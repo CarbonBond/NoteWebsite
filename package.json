@@ -1,0 +1,29 @@
+{
+  "name": "notewebsite",
+  "version": "1.0.0",
+  "description": "A todo/note website",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack",
+    "watch": "webpack --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CarbonBond/NoteWebsite.git"
+  },
+  "author": "CarbonBond",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/CarbonBond/NoteWebsite/issues"
+  },
+  "homepage": "https://github.com/CarbonBond/NoteWebsite#readme",
+  "devDependencies": {
+    "webpack": "^5.58.1",
+    "webpack-cli": "^4.9.0"
+  },
+  "dependencies": {
+    "css-loader": "^6.4.0",
+    "style-loader": "^3.3.0"
+  }
+}
