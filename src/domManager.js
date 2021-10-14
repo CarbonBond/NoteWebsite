@@ -36,22 +36,13 @@ const domManager = (() => {
         }
     };
 
-    const drawNewDOM = (item, location, textContent, additionalClass) => {
-        const locationElement = document.querySelector(`.${location}`);
-        if (typeof(item)=='string') {
-            if(!checkIfDrawn(item, locationElement)) {
-                const newDiv = document.createElement('div');
-                newDiv.classList.add(item)
-                if(additionalClass){
-                    newDiv.classList.add(additionalClass);
-                }
-                if(textContent){
-                    newDiv.textContent = textContent;
-                }
-                locationElement.appendChild(newDiv);
-                return newDiv;
-            }
+
+    function createElementDOM(elementStyle){
+        const elementDOM = document.createElement(elementStyle);
+        for(let i = 1; i < arguments.length; i++){
+            elementDOM.classList.add(arguments[i]);
         }
+        return elementDOM;
     }
     
     function checkIfDrawn(searchClass, searchLocation){
@@ -74,7 +65,7 @@ const domManager = (() => {
     
     return{
         deleteElement,
-        drawNewDOM,
+        createElementDOM
     }
 })();
 

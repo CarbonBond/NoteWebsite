@@ -11,70 +11,114 @@ const noteManager = (()=> {
         }
         if(newNote != ''){
             let noteClass = newNote.replaceAll(" ", '');
-            for (let note in noteList){
-                if(note == noteClass){
-                    noteClass += '01';
-                    for(let noteDup in noteList){
-                        if(noteClass == noteDup){
-                            let endNumber = noteClass.slice(noteClass.lastIndexOf('0')+1, noteClass.length)
-                            let noteClassAmount = Number(endNumber);
-                            noteClassAmount += 1;
-                            noteClass = noteClass.replace(endNumber, noteClassAmount);  
+            let noteCount = 0;
+            let countStart = 0;
+            let checkNoMatch = 0;
+            while(!checkNoMatch){
+                for (let note in noteList){
+                    if(note == noteClass){
+                        noteCount++;
+                        if(!countStart){
+                            noteClass += '0';
+                            noteClass += noteCount
+                            console.log(noteClass);
+                            countStart = 1;
+                        }else{
+                            noteClass = noteClass.substring(0, noteClass.lastIndexOf('0')+1);
+                            noteClass += noteCount;
                         }
                     }
                 }
-            }
-            noteList[noteClass] = {name: `${newNote}`};
-            console.log(noteList);
-            for(let note in noteList){
-                const domNote = domManager.drawNewDOM(note, 'noteContainer', note, 'directoryNote');
-                if(domNote){
-                    domNote.addEventListener('click', () => {
-                        updateNoteBody(domNote);
-                    })
+                checkNoMatch = 1;
+                for (let note in noteList){
+                    if(note == noteClass){
+                        checkNoMatch = 0;
+                    }
                 }
             }
+            noteList[noteClass] = {name: `${newNote}`, id: noteClass, cardList: {}};
+            noteDom.addDirectory(noteList[noteClass]);
         }
     }
     const removeNote = (note) => {
-        console.log(note);
-        domManager.deleteElement(note, true);
-        delete noteList[note];
+        delete noteList[note.id];
+
     }
     
-    function updateNoteBody(domNote){
-        //TEST
-        domManager.deleteElement('noteContent', true);
-        const noteContent = domManager.drawNewDOM(domNote.classList[0], 'noteBody', domNote.classList[0], 'noteContent');
-        document.querySelectorAll('.directoryNote').forEach((item) => {
-            item.classList.remove('underlined');
-        })
-        domNote.classList.add('underlined');
+    return {
+        addNote,
+        removeNote,
+    }
+})();
 
-        //toolbox MOVE
+
+const noteDom = (() => {
+    
+    function createToolMenu(location, note){
         const noteToolBox = document.createElement('div');
         noteToolBox.classList.add('noteToolBox');
-        const noteToolMenu = document.createElement('div');
-        noteToolMenu.classList.add('noteToolMenu', 'noteTool');
+        
+        const noteToolMenu = domManager.createElementDOM('div', "noteToolMenu", 'noteTool');
+        noteToolMenu.textContent = "M";
         noteToolMenu.addEventListener('click', () => {
             const noteToolHide = noteToolBox.querySelectorAll('.noteToolHide');
             noteToolHide.forEach(item => {
                 item.classList.toggle('hide');
             })
         })
-        const noteToolDelete = document.createElement('div');
-        noteToolDelete.classList.add('noteToolDelete', 'noteToolHide', 'noteTool', 'hide');
+        
+        const noteToolDelete = domManager.createElementDOM('div', 'noteToolDelete', 'noteToolHide', 'noteTool', 'hide');
+        noteToolDelete.textContent = 'D';
         noteToolDelete.addEventListener('click', ()=> {
-            removeNote(domNote.classList[0])
+            noteManager.removeNote(note)
+            domManager.deleteElement(note.id, true);
+            domManager.deleteElement('noteContent', true);
         })
+
+        const noteToolAddCard = domManager.createElementDOM('div', 'noteToolAddCard', 'noteTool', 'noteToolHide', 'hide');
+        noteToolAddCard.textContent = "A"
+        noteToolAddCard.addEventListener('click', ()=> {})
+
         noteToolBox.appendChild(noteToolMenu);
         noteToolBox.appendChild(noteToolDelete);
-        noteContent.appendChild(noteToolBox);
-        
+        noteToolBox.appendChild(noteToolAddCard);
+        location.appendChild(noteToolBox);
     }
+
+    const addDirectory = (note) => {
+
+        const noteContainer = document.querySelector('.noteContainer');
+        console.log(note);
+        const noteFolder = domManager.createElementDOM('div', note.id, 'directoryNote');
+        noteFolder.textContent = note.id;
+        noteContainer.appendChild(noteFolder);
+
+        noteFolder.addEventListener('click', (item) => {
+            updateNoteContent(note, noteFolder);
+        })
+
+        /*
+        if(directoryNote){
+            directoryNote.addEventListener('click', () => {
+
+            })
+        }*/
+    }
+
+    function updateNoteContent(note, noteFolder){
+        //TEST
+        domManager.deleteElement('noteContent', true);
+        const noteBody = document.querySelector('.noteBody');
+        const noteContent = domManager.createElementDOM('div', 'noteContent')
+        noteBody.appendChild(noteContent);
+        document.querySelectorAll('.directoryNote').forEach((item) => {
+            item.classList.remove('underlined');
+        })
+        noteFolder.classList.add('underlined');
+        createToolMenu(noteContent, note)
+    }    
     return {
-        addNote,
-        
+        addDirectory,
     }
 })();
 
