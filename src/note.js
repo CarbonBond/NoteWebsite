@@ -11,43 +11,25 @@ const noteManager = (()=> {
         }
         if(newNote != ''){
             let noteClass = newNote.replaceAll(" ", '');
-            let noteCount = 0;
-            let countStart = 0;
-            let checkNoMatch = 0;
-            while(!checkNoMatch){
-                for (let note in noteList){
-                    if(note == noteClass){
-                        noteCount++;
-                        if(!countStart){
-                            noteClass += '0';
-                            noteClass += noteCount
-                            console.log(noteClass);
-                            countStart = 1;
-                        }else{
-                            noteClass = noteClass.substring(0, noteClass.lastIndexOf('0')+1);
-                            noteClass += noteCount;
-                        }
-                    }
-                }
-                checkNoMatch = 1;
-                for (let note in noteList){
-                    if(note == noteClass){
-                        checkNoMatch = 0;
-                    }
-                }
-            }
+            noteClass = addDuplicateNumber(newNote, noteList)
             noteList[noteClass] = {name: `${newNote}`, id: noteClass, cardList: {}};
             noteDom.addDirectory(noteList[noteClass]);
         }
     }
     const removeNote = (note) => {
         delete noteList[note.id];
-
     }
+
+    const addCard = (note, cardName) => {
+        note.cardList[cardName] = {name: cardName};
+        noteDom.addCard(note.cardList[cardName]);
+    }
+
     
     return {
         addNote,
         removeNote,
+        addCard,
     }
 })();
 
@@ -77,7 +59,12 @@ const noteDom = (() => {
 
         const noteToolAddCard = domManager.createElementDOM('div', 'noteToolAddCard', 'noteTool', 'noteToolHide', 'hide');
         noteToolAddCard.textContent = "A"
-        noteToolAddCard.addEventListener('click', ()=> {})
+        noteToolAddCard.addEventListener('click', ()=> {
+            const cardPrompt = prompt('Add card', '');
+            if(cardPrompt != '' || cardPrompt != null) {
+                noteManager.addCard(note, cardPrompt);
+            }
+        })
 
         noteToolBox.appendChild(noteToolMenu);
         noteToolBox.appendChild(noteToolDelete);
@@ -96,13 +83,6 @@ const noteDom = (() => {
         noteFolder.addEventListener('click', (item) => {
             updateNoteContent(note, noteFolder);
         })
-
-        /*
-        if(directoryNote){
-            directoryNote.addEventListener('click', () => {
-
-            })
-        }*/
     }
 
     function updateNoteContent(note, noteFolder){
@@ -116,10 +96,44 @@ const noteDom = (() => {
         })
         noteFolder.classList.add('underlined');
         createToolMenu(noteContent, note)
-    }    
+    }
+    const addCard = (card) => {
+        const noteContent = document.querySelector('.noteContent');
+        console.log(card.name);
+    }
     return {
         addDirectory,
+        addCard,
     }
 })();
+
+function addDuplicateNumber(stringItem, itemList){
+    let count = 0;
+    let countStart = 0;
+    let checkNoMatch = 0;
+    while(!checkNoMatch){
+        for (let item in itemList){
+            if(item == stringItem){
+                count++;
+                if(!countStart){
+                    stringItem += '0';
+                    stringItem += count
+                    console.log(stringItem);
+                    countStart = 1;
+                }else{
+                    stringItem = stringItem.substring(0, stringItem.lastIndexOf('0')+1);
+                    stringItem += count;
+                }
+            }
+        }
+        checkNoMatch = 1;
+        for (let item in itemList){
+            if(item == stringItem){
+                checkNoMatch = 0;
+            }
+        }
+    }
+    return stringItem;
+}
 
 export default noteManager;

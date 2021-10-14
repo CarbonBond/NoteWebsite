@@ -65,7 +65,8 @@ const domManager = (() => {
     
     return{
         deleteElement,
-        createElementDOM
+        createElementDOM,
+        checkIfDrawn
     }
 })();
 
