@@ -1,34 +1,45 @@
 const domManager = (() => {
 
 
-    const deleteElement = (deleteClass, deleteAll) => {
+    const deleteElement = (deleteTarget, deleteAll) => {
         if(deleteAll == undefined || typeof(deleteAll) != "boolean") {
             console.error(" domManager: deleteElement: deleteAll is not a BOOL type")
             return 'error';
         }
         if(deleteAll == true) {
-            const elementToRemove = document.querySelectorAll(`.${deleteClass}`);
-            if(elementToRemove){
-                elementToRemove.forEach(item => {
-                    item.remove();
-                })
+            if(typeof deleteTarget == 'string') {
+                const elementToRemove = document.querySelectorAll(`.${deleteTarget}`);
+                if(elementToRemove){
+                    elementToRemove.forEach(item => {
+                        item.remove();
+                    })
+                } else {
+                    console.warn(`domManager.deleteElement: Didn't find ".${deleteTarget}" class.`)
+                }
             } else {
-                console.warn(`domManager.deleteElement: Didn't find ".${deleteClass}" class.`)
+                console.warn(`domManager.deleteElement: Can only delete multiple elements when using class selector`)
             }
         } else {
-            const elementToRemove = document.querySelector(`.${deleteClass}`);
-            if(elementToRemove){
-                elementToRemove.remove();
+            if(typeof deleteTarget == 'string'){
+                const elementToRemove = document.querySelector(`.${deleteTarget}`);
+                if(elementToRemove){
+                    elementToRemove.remove();
+                } else {
+                    console.warn(`domManager.deleteElement: Didn't find ".${deleteTarget}" class.`)
+                }
+            } else if (isDOM(deleteTarget)) {
+                deleteTarget.remove();
             } else {
-                console.warn(`domManager.deleteElement: Didn't find ".${deleteClass}" class.`)
+                console.warn(`domManager.deleteElement: deleteTarget is not a valid selector`)
             }
+            
         }
     };
 
-    const updateDOM = (item, location, textContent, additionalClass) => {
+    const drawNewDOM = (item, location, textContent, additionalClass) => {
         const locationElement = document.querySelector(`.${location}`);
         if (typeof(item)=='string') {
-            if(!checkIfDrawn(item)){
+            if(!checkIfDrawn(item, locationElement)) {
                 const newDiv = document.createElement('div');
                 newDiv.classList.add(item)
                 if(additionalClass){
@@ -38,22 +49,32 @@ const domManager = (() => {
                     newDiv.textContent = textContent;
                 }
                 locationElement.appendChild(newDiv);
+                return newDiv;
             }
         }
     }
     
     function checkIfDrawn(searchClass, searchLocation){
-        const item = document.querySelector(`.${searchClass}`)
-        let isDrawn = false;
-        if(item) {
-            isDrawn = true;
+        if(searchLocation){
+            const item = searchLocation.querySelector(`.${searchClass}`)
+            let isDrawn = false;
+            if(item) {
+                isDrawn = true;
+            }
+            return isDrawn;
         }
-        return isDrawn;
     }
+
+    function isDOM(Obj) {
+              
+        // Function that checks whether 
+        // object is of type Element
+       return Obj instanceof Element;
+   }
     
     return{
         deleteElement,
-        updateDOM,
+        drawNewDOM,
     }
 })();
 

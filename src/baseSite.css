@@ -22,13 +22,15 @@ body{
     height: 100%;
     background-color: red;
     max-width: none;
-    padding: 70px 10px 0px 30px;
 }
 .noteDirectoryButton{
     position: absolute;
     width: 35px;
     height: 35px;
     background-color: yellow;
+}
+.noteContainer{
+    padding: 70px 10px 0px 30px;
 }
 .noteDirectoryButton:hover{
     background-color: orange;

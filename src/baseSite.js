@@ -11,6 +11,11 @@ const main = (() => {
     noteDirectory.classList.add('noteDirectory');
     siteBody.appendChild(noteDirectory);
 
+    //Note Container
+    const noteContainter = document.createElement('div');
+    noteContainter.classList.add('noteContainer')
+    noteDirectory.appendChild(noteContainter);
+
     //noteBody
     const noteBody = document.createElement('div');
     noteBody.classList.add('noteBody');
@@ -24,6 +29,8 @@ const main = (() => {
     noteDirectoryButton.addEventListener('click',() => {
         noteDirectory.classList.toggle('hidden');
     })
+
+    const noteAdd = document.createElement('div');
 
 })
 
