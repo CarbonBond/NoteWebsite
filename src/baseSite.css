@@ -32,8 +32,14 @@ body{
 .noteContainer{
     padding: 70px 10px 0px 30px;
 }
+.noteAddContainer{
+    padding: 10px 10px 0px 30px;
+}
 .noteDirectoryButton:hover{
     background-color: orange;
+}
+.add:hover{
+    cursor: pointer;
 }
 .hidden{
     display: none;

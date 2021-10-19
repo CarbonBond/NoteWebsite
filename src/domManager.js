@@ -1,6 +1,5 @@
 const domManager = (() => {
 
-
     const deleteElement = (deleteTarget, deleteAll) => {
         if(deleteAll == undefined || typeof(deleteAll) != "boolean") {
             console.error(" domManager: deleteElement: deleteAll is not a BOOL type")
@@ -72,3 +71,4 @@ const domManager = (() => {
 
 
 export default domManager;
+

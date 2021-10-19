@@ -4,25 +4,31 @@ import domManager from "./domManager.js"
 const noteManager = (()=> {
     let noteList = {}
     
-    const addNote = (newNote) => {
-        if(typeof(newNote) != 'string'){
-            console.error(`noteManager.addNote: ${newNote} is not a valid string`)
-            return 'error'
-        }
-        if(newNote != ''){
-            let noteClass = newNote.replaceAll(" ", '');
-            noteClass = addDuplicateNumber(newNote, noteList)
-            noteList[noteClass] = {name: `${newNote}`, id: noteClass, cardList: {}};
-            noteDom.addDirectory(noteList[noteClass]);
+    const addNote = (noteName, note) => {
+        let noteClass = noteName.replaceAll(" ", '');
+        noteClass = addDuplicateNumber(noteName, noteList)
+        if(noteName != '' && typeof(noteName) == 'string'){
+            let newNote = {name: `${noteName}`, id: noteClass, cardList: {}, noteFolder: {}};
+            if(typeof(note) == 'object'){
+                note.noteFolder[noteClass] = newNote;
+                noteDom.addDirectory(note.noteFolder[noteClass], note.id);
+            }else{
+                noteList[noteClass] = newNote;
+                noteDom.addDirectory(noteList[noteClass], 'root');
+            }
+        } else {
+            console.error('noteManager.addNote: Incorrect type')
         }
     }
     const removeNote = (note) => {
         delete noteList[note.id];
     }
 
-    const addCard = (note, cardName) => {
-        note.cardList[cardName] = {name: cardName};
-        noteDom.addCard(note.cardList[cardName]);
+    const addCard = (note, cardName, cardType) => {
+        let cardID = cardName.replaceAll(" ", "");
+        cardID = addDuplicateNumber(cardID, note.cardList);
+        note.cardList[cardID] = {name: cardName, id: cardID, type: cardType, content: '',}; 
+        noteDom.addCardDOM(note.cardList[cardID]);
     }
 
     
@@ -60,9 +66,9 @@ const noteDom = (() => {
         const noteToolAddCard = domManager.createElementDOM('div', 'noteToolAddCard', 'noteTool', 'noteToolHide', 'hide');
         noteToolAddCard.textContent = "A"
         noteToolAddCard.addEventListener('click', ()=> {
-            const cardPrompt = prompt('Add card', '');
-            if(cardPrompt != '' || cardPrompt != null) {
-                noteManager.addCard(note, cardPrompt);
+            const cardPrompt = prompt('Add card', '');//TODO Add a custom prompt
+            if(cardPrompt != '' && cardPrompt != null && cardPrompt != undefined) {
+                noteManager.addCard(note, cardPrompt, 'textBox'); 
             }
         })
 
@@ -72,38 +78,78 @@ const noteDom = (() => {
         location.appendChild(noteToolBox);
     }
 
-    const addDirectory = (note) => {
-
+    const addDirectory = (note, location) => {
         const noteContainer = document.querySelector('.noteContainer');
         console.log(note);
-        const noteFolder = domManager.createElementDOM('div', note.id, 'directoryNote');
-        noteFolder.textContent = note.id;
-        noteContainer.appendChild(noteFolder);
+        const noteMain = domManager.createElementDOM('div', note.id, 'directoryNote');
+        const noteHead = domManager.createElementDOM('div', 'noteHead');
+        const noteFoot = domManager.createElementDOM('div', 'noteFoot');
+        const noteName = domManager.createElementDOM('div', 'noteName');
+        const noteAdd = domManager.createElementDOM('div', 'noteAdd');
 
-        noteFolder.addEventListener('click', (item) => {
-            updateNoteContent(note, noteFolder);
+        noteHead.appendChild(noteName);
+        noteHead.appendChild(noteAdd);
+        noteMain.appendChild(noteHead);
+        noteMain.appendChild(noteFoot);
+        noteName.textContent = note.id;
+        noteAdd.textContent = '+';
+        noteMain.setAttribute('note', note.id)
+        if(location == 'root'){
+            noteContainer.appendChild(noteMain);
+        }else if (location != null && location != undefined && location != ''){
+            const noteLocation = noteContainer.querySelector(`.${location}`);
+            const footer = noteLocation.querySelector('.noteFoot');
+            footer.appendChild(noteMain);
+        }
+
+        noteAdd.addEventListener('click', () => {
+            noteManager.addNote('test', note); //TODO ADD A POPUP FOR ADDING NOTES
+        })
+
+        noteName.addEventListener('click', (item) => {
+            updateNoteContent(note, noteName);
         })
     }
 
-    function updateNoteContent(note, noteFolder){
+    function updateNoteContent(note, noteName){
         //TEST
         domManager.deleteElement('noteContent', true);
         const noteBody = document.querySelector('.noteBody');
         const noteContent = domManager.createElementDOM('div', 'noteContent')
         noteBody.appendChild(noteContent);
-        document.querySelectorAll('.directoryNote').forEach((item) => {
+        document.querySelectorAll('.noteName').forEach((item) => {
             item.classList.remove('underlined');
         })
-        noteFolder.classList.add('underlined');
+        noteName.classList.add('underlined');
         createToolMenu(noteContent, note)
+        for(let card in note.cardList){
+            addCardDOM(note.cardList[card]);
+        }
     }
-    const addCard = (card) => {
+    const addCardDOM = (card) => {
         const noteContent = document.querySelector('.noteContent');
-        console.log(card.name);
+        const cardDOM = domManager.createElementDOM('div', 'card', card.id);
+        noteContent.appendChild(cardDOM);
+        if(card.type === 'textBox'){
+            addCardTextbox(card, cardDOM);
+        }
     }
+    const addCardTextbox = (card, location) => {
+ 
+            const textBox = domManager.createElementDOM('textarea', 'textBox');
+            location.appendChild(textBox);
+            textBox.innerHTML = card.content;
+            textBox.style.height = `${textBox.scrollHeight}px`;
+
+            textBox.addEventListener('keyup', e => {
+                card.content = textBox.value;
+                textBox.style.height = `${textBox.scrollHeight}px`;
+            })
+    }
+    
     return {
         addDirectory,
-        addCard,
+        addCardDOM,
     }
 })();
 
@@ -118,7 +164,6 @@ function addDuplicateNumber(stringItem, itemList){
                 if(!countStart){
                     stringItem += '0';
                     stringItem += count
-                    console.log(stringItem);
                     countStart = 1;
                 }else{
                     stringItem = stringItem.substring(0, stringItem.lastIndexOf('0')+1);

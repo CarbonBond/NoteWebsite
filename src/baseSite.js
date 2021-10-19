@@ -1,4 +1,6 @@
 import "./baseSite.css"
+import noteManager from "./note.js";
+import noteDom from './note.js';
 
 const main = (() => {
     const container = document.querySelector("#container");
@@ -12,9 +14,9 @@ const main = (() => {
     siteBody.appendChild(noteDirectory);
 
     //Note Container
-    const noteContainter = document.createElement('div');
-    noteContainter.classList.add('noteContainer')
-    noteDirectory.appendChild(noteContainter);
+    const noteContainer = document.createElement('div');
+    noteContainer.classList.add('noteContainer')
+    noteDirectory.appendChild(noteContainer);
 
     //noteBody
     const noteBody = document.createElement('div');
@@ -30,7 +32,18 @@ const main = (() => {
         noteDirectory.classList.toggle('hidden');
     })
 
-    const noteAdd = document.createElement('div');
+    const noteAddContainer = document.createElement('div');
+    noteDirectory.appendChild(noteAddContainer);
+    noteAddContainer.classList.add('noteAddContainer');
+
+    const addDir = document.createElement('div');
+    noteAddContainer.appendChild(addDir);
+    addDir.textContent = "Add";
+    addDir.classList.add('add');
+    addDir.setAttribute('note', `root`)
+    addDir.addEventListener('click', (e)=> {
+        noteManager.addNote('test', e.target.getAttribute('note'));
+    })
 
 })
 

@@ -1,7 +1,27 @@
 .directoryNote{
     font-size:20px;
+    display:flex;
+    flex-direction: column;
 }
-.directoryNote:hover{
+.noteHead{
+    display:flex;
+    flex-direction: row;
+    justify-content:space-between;
+}
+.noteAdd{
+    margin-left: 20px;
+    background-color: lightblue;
+    width: 25px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+.noteFoot{
+    margin-left: 20px;
+    display:flex;
+    flex-direction: column;
+}
+.noteName:hover, .noteAdd:hover{
     cursor: pointer;
 }
 
@@ -25,18 +45,33 @@
     position: relative;
     right: 30px;
 }
-.noteToolMenu{
-
-}
 .noteTool{
     width: 35px;
     height: 35px;
     background-color: yellow;
     margin:10px;
+    cursor: pointer;
 }
 .noteToolDelete{
     background-color: red;
 }
+.card{
+    width: 100%;
+    background-color: rgb(55, 204, 241);
+    display:flex;
+    margin-bottom: 15px;
+}
+.textBox{
+    width: 100%;
+    outline: none;
+    background-color: yellow;
+    border: none;
+    resize: none;
+    margin: 0;
+    padding: 0;
+    cursor: pointer;
+}
+
 .hide{
     display: none;
 }
