@@ -2,17 +2,20 @@ import "./note.css";
 import domManager from "./domManager.js"
 
 const noteManager = (()=> {
-    let noteList = {}
+    let noteList = {};
     
     const addNote = (noteName, note) => {
-        let noteClass = noteName.replaceAll(" ", '');
-        noteClass = addDuplicateNumber(noteName, noteList)
         if(noteName != '' && typeof(noteName) == 'string'){
-            let newNote = {name: `${noteName}`, id: noteClass, cardList: {}, noteFolder: {}};
+            let noteClass = noteName.replaceAll(" ", '');
+            let newNote = {name: `${noteName}`, id: '', cardList: {}, noteFolder: {}};
             if(typeof(note) == 'object'){
+                noteClass = addDuplicateNumber(noteName, note.noteFolder)
+                newNote.id = `${note.id}-${noteClass}`;
                 note.noteFolder[noteClass] = newNote;
                 noteDom.addDirectory(note.noteFolder[noteClass], note.id);
             }else{
+                noteClass = addDuplicateNumber(noteName, noteList)
+                newNote.id = noteClass
                 noteList[noteClass] = newNote;
                 noteDom.addDirectory(noteList[noteClass], 'root');
             }
@@ -31,11 +34,27 @@ const noteManager = (()=> {
         noteDom.addCardDOM(note.cardList[cardID]);
     }
 
+    const getAllNotes = (list) => {
+        let allNotes = [];
+        for(let note in list){
+            console.log(`${Object.keys(list[note].noteFolder).length}`)
+            if(Object.keys(list[note].noteFolder).length > 0){
+                let anotherList = getAllNotes(list[note].noteFolder)
+                for(let anotherNote in anotherList){
+                    allNotes.push(anotherList[anotherNote]);
+                }
+            }
+            allNotes.push(list[note]);
+        }
+        return allNotes;
+    }
+
     
     return {
         addNote,
         removeNote,
         addCard,
+        getAllNotes,
     }
 })();
 
@@ -91,7 +110,7 @@ const noteDom = (() => {
         noteHead.appendChild(noteAdd);
         noteMain.appendChild(noteHead);
         noteMain.appendChild(noteFoot);
-        noteName.textContent = note.id;
+        noteName.textContent = note.name;
         noteAdd.textContent = '+';
         noteMain.setAttribute('note', note.id)
         if(location == 'root'){
