@@ -61,13 +61,41 @@ const domManager = (() => {
         // object is of type Element
        return Obj instanceof Element;
    }
+   function makeValidSelector(string){
+       const VALIDSELECTION = [
+           'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 
+       'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 
+       '-', '_'];
+       const VALIDNUMBER = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
+   
+       let validString = '';
+   
+       for(let i = 0; i < string.length; i++) {
+           if(i == 0){
+               if(VALIDSELECTION.includes(string.substr(i, 1))) {
+                   validString +=(string.substr(i, 1))                
+               } else if(VALIDNUMBER.includes(string.substr(i, 1))){
+                    validString += '_';
+                    validString += (string.substr(i))
+               }
+           } else{
+               if(VALIDSELECTION.includes(string.substr(i, 1)) || VALIDNUMBER.includes(string.substr(i, 1))) {
+                   validString +=(string.substr(i, 1))                
+               } else {
+               }
+           }
+       }
+       return validString;
+   }
     
     return{
         deleteElement,
         createElementDOM,
-        checkIfDrawn
+        checkIfDrawn,
+        makeValidSelector
     }
 })();
+
 
 
 export default domManager;

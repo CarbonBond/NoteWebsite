@@ -7,27 +7,36 @@ body{
     height: 100vh;
 }
 .siteBody{
+    background-color:rgb(5, 75, 11);
     width: 100%;
     height: 100%;
     display: flex;
 }
 .noteBody{
-    flex:1;
-    flex-grow: 2;
     background-color:green;
+    min-width:100vw;
+    min-height:100vh;
 }
-.noteDirectory{
-    position: absolute;
+.noteDirectoryContainer{
+    position: fixed;
     width: 100%;
     height: 100%;
     background-color: red;
     max-width: none;
+    z-index: 50;
+}
+.noteDirectory{
+    position: fixed;
+    height: inherit;
+    width: inherit;
+    background-color:rgb(70, 26, 153);
 }
 .noteDirectoryButton{
-    position: absolute;
+    position: fixed;
     width: 35px;
     height: 35px;
     background-color: yellow;
+    z-index: 100;
 }
 .noteContainer{
     padding: 70px 10px 0px 30px;
@@ -45,10 +54,10 @@ body{
     display: none;
 }
 @media screen and (min-width: 900px) {
-    .noteDirectory{
-        position:static;
-        flex:1;
+    .noteDirectoryContainer{
+        position: static;
+        float: left;
         background-color:rgb(70, 26, 153);
-        max-width: 450px;
+        width: 400px;
     }
 }
